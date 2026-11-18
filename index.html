@@ -113,6 +113,15 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
 .terms p{margin:0}
 .sub{font-size:14px;color:var(--muted)}
 .sig-box.invalid{border-color:var(--err)}
+.subchips{display:flex;flex-direction:column;gap:8px;padding-left:4px}
+.drop{border:1.5px dashed var(--navy);border-radius:10px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:var(--navy-soft);cursor:pointer}
+.drop input{display:none}
+.drop .btn{min-height:48px;font-size:16px;display:inline-flex;align-items:center}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.thumb{position:relative;aspect-ratio:4/3;border-radius:8px;overflow:hidden;background:var(--navy-soft)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb button{position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(26,33,64,.75);color:#fff;font-size:18px;line-height:1}
+.thumb.busy::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.6)}
 </style>
 </head>
 <body>
@@ -216,7 +225,18 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
         <div class="field"><label data-t="pet"></label><div class="chips" id="pet">
           <label class="chip"><input type="radio" name="pet" value="Allowed"><span data-t="petYes"></span></label>
           <label class="chip"><input type="radio" name="pet" value="Not allowed"><span data-t="petNo"></span></label>
-          <label class="chip"><input type="radio" name="pet" value="Negotiable"><span data-t="nego"></span></label></div></div>
+          <label class="chip"><input type="radio" name="pet" value="Negotiable"><span data-t="nego"></span></label></div>
+          <div class="subchips" id="petKindBox" hidden><span class="sub" data-t="petKind"></span>
+            <div class="chips" id="petKind">
+              <label class="chip"><input type="radio" name="petKind" value="Dog"><span data-t="dog"></span></label>
+              <label class="chip"><input type="radio" name="petKind" value="Cat"><span data-t="cat"></span></label>
+              <label class="chip"><input type="radio" name="petKind" value="Dog and cat"><span data-t="both"></span></label></div></div></div>
+        <div class="field"><label data-t="incl"></label><div class="chips" id="incl">
+          <label class="chip"><input type="checkbox" value="Internet / Wi-Fi"><span data-t="inclNet"></span></label>
+          <label class="chip"><input type="checkbox" value="Common area fee"><span data-t="inclCam"></span></label>
+          <label class="chip"><input type="checkbox" value="Cable TV"><span data-t="inclTv"></span></label>
+          <label class="chip"><input type="checkbox" value="Water"><span data-t="inclWater"></span></label>
+          <label class="chip"><input type="checkbox" value="Cleaning service"><span data-t="inclClean"></span></label></div></div>
       </div>
       <div class="field"><label for="net" data-t="net"></label>
         <div class="money"><input id="net" type="text" inputmode="numeric"><span class="unit" data-t="thb"></span></div>
@@ -236,8 +256,25 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
         <label class="chip"><input type="radio" name="key" value="With owner"><span data-t="keyOwner"></span></label>
         <label class="chip"><input type="radio" name="key" value="With building office"><span data-t="keyOffice"></span></label>
         <label class="chip"><input type="radio" name="key" value="Given to Nexspace"><span data-t="keyNx"></span></label>
-        <label class="chip"><input type="radio" name="key" value="Tenant occupied"><span data-t="keyTenant"></span></label></div></div>
+        <label class="chip"><input type="radio" name="key" value="Digital lock (code)"><span data-t="keyCode"></span></label>
+        <label class="chip"><input type="radio" name="key" value="Tenant occupied"><span data-t="keyTenant"></span></label></div>
+        <div class="subchips" id="keyCodeBox" hidden>
+          <label for="keyCode" class="sub" data-t="keyCodeLbl"></label>
+          <input id="keyCode" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="max-width:320px">
+          <span class="sub" data-t="keyCodeSub"></span></div></div>
       <div class="field"><label for="notes" data-t="notes"></label><textarea id="notes"></textarea></div>
+    </section>
+
+    <!-- PHOTOS -->
+    <section id="photoSec" hidden>
+      <div class="label" data-t="secPhotos"></div>
+      <label class="drop" for="photos">
+        <input id="photos" type="file" accept="image/*" multiple>
+        <span data-t="photosLead"></span>
+        <span class="btn ghost" data-t="photosBtn"></span>
+        <span class="sub" id="photoCount"></span>
+      </label>
+      <div class="thumbs" id="thumbs"></div>
     </section>
 
     <!-- AUTHORISATION -->
@@ -294,7 +331,10 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
       secPrice:"Resale price / Rental price", sale:"For sale", rent:"For rent", intentHint:"Please choose For sale, For rent, or both.",
       salePrice:"Resale price", rentPrice:"Rental price per month", thb:"THB", thbMonth:"THB / month", priceHint:"Please enter the price.",
       tf:"Transfer fee (TF expenses)", tf5050:"Split 50/50", tfBuyer:"Buyer pays all", tfSeller:"Seller pays all", nego:"Negotiable",
-      pet:"Pets", petYes:"Allowed", petNo:"Not allowed",
+      pet:"Pets", petYes:"Allowed", petNo:"Not allowed", petKind:"Which pets?", dog:"Dog", cat:"Cat", both:"Dog and cat",
+      incl:"Rent includes", inclNet:"Internet / Wi-Fi", inclCam:"Common area fee", inclTv:"Cable TV", inclWater:"Water", inclClean:"Cleaning service",
+      keyCode:"Digital lock (code)", keyCodeLbl:"Door code / password for Nexspace to enter", keyCodeSub:"Only sent to the Nexspace team. You can also give it to your agent by phone.",
+      secPhotos:"Property photos (optional)", photosLead:"If you have your own photos of the property, add them here.", photosBtn:"Add photos", photosN:n=>n+" photo"+(n===1?"":"s")+" added", photosMax:"Up to 25 photos.",
       net:"Net price (if different)", netSub:"The amount you want to receive after commission and fees.",
       secCond:"Additional condition", furn:"Furnished", furnFull:"Fully furnished", furnPart:"Partly furnished", furnNone:"Unfurnished",
       appliances:"Appliances included", direction:"Direction the unit faces", dirNames:["North","North-east","East","South-east","South","South-west","West","North-west"],
@@ -308,7 +348,7 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
       consentHint:"Please tick the box to continue.",
       formErr:"Some required details are missing. They are marked in red above.",
       sendErr:"We couldn't send the form just now. Your answers are still here, so please tap Submit again. If it keeps failing, contact us on LINE @NEXSPACE or call 064 164 2459.",
-      submit:"Submit property", sending:"Sending your property details…"
+      submit:"Submit property", sending:"Sending your property details…", sendingPhotos:"Sending your property details and photos… this can take a minute."
     },
     th:{
       title:"ลงทะเบียนทรัพย์", lead:"สำหรับเจ้าของทรัพย์ กรุณากรอกรายละเอียดทรัพย์ของท่าน แล้วทีมงานจะติดต่อกลับเพื่อดำเนินการประกาศ",
@@ -322,7 +362,10 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
       secPrice:"ราคาขาย / ราคาเช่า", sale:"ขาย", rent:"ให้เช่า", intentHint:"กรุณาเลือก ขาย ให้เช่า หรือทั้งสองอย่าง",
       salePrice:"ราคาขาย", rentPrice:"ค่าเช่าต่อเดือน", thb:"บาท", thbMonth:"บาท / เดือน", priceHint:"กรุณาระบุราคา",
       tf:"ค่าธรรมเนียมการโอน", tf5050:"แบ่งคนละครึ่ง", tfBuyer:"ผู้ซื้อจ่ายทั้งหมด", tfSeller:"ผู้ขายจ่ายทั้งหมด", nego:"ต่อรองได้",
-      pet:"สัตว์เลี้ยง", petYes:"เลี้ยงได้", petNo:"เลี้ยงไม่ได้",
+      pet:"สัตว์เลี้ยง", petYes:"เลี้ยงได้", petNo:"เลี้ยงไม่ได้", petKind:"สัตว์เลี้ยงประเภทใด", dog:"สุนัข", cat:"แมว", both:"สุนัขและแมว",
+      incl:"ค่าเช่ารวม", inclNet:"อินเทอร์เน็ต / Wi-Fi", inclCam:"ค่าส่วนกลาง", inclTv:"เคเบิลทีวี", inclWater:"ค่าน้ำ", inclClean:"บริการทำความสะอาด",
+      keyCode:"กลอนดิจิทัล (รหัส)", keyCodeLbl:"รหัสประตู / รหัสผ่าน ให้เน็กซ์สเปซเข้าห้อง", keyCodeSub:"ส่งถึงทีมเน็กซ์สเปซเท่านั้น หรือแจ้งเอเจนต์ทางโทรศัพท์ก็ได้",
+      secPhotos:"รูปภาพทรัพย์ (ไม่บังคับ)", photosLead:"หากท่านมีรูปภาพทรัพย์ของท่านเอง สามารถเพิ่มได้ที่นี่", photosBtn:"เพิ่มรูปภาพ", photosN:n=>"เพิ่มแล้ว "+n+" รูป", photosMax:"สูงสุด 25 รูป",
       net:"ราคาสุทธิ (ถ้าต่างจากด้านบน)", netSub:"จำนวนเงินที่ท่านต้องการได้รับหลังหักค่านายหน้าและค่าใช้จ่าย",
       secCond:"เงื่อนไขเพิ่มเติม", furn:"เฟอร์นิเจอร์", furnFull:"ตกแต่งครบ", furnPart:"ตกแต่งบางส่วน", furnNone:"ไม่มีเฟอร์นิเจอร์",
       appliances:"เครื่องใช้ไฟฟ้าที่ให้", direction:"ทิศที่ห้องหันไป", dirNames:["เหนือ","ตะวันออกเฉียงเหนือ","ตะวันออก","ตะวันออกเฉียงใต้","ใต้","ตะวันตกเฉียงใต้","ตะวันตก","ตะวันตกเฉียงเหนือ"],
@@ -336,7 +379,7 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
       consentHint:"กรุณาทำเครื่องหมายเพื่อดำเนินการต่อ",
       formErr:"ยังกรอกข้อมูลที่จำเป็นไม่ครบ กรุณาตรวจสอบช่องที่เป็นสีแดงด้านบน",
       sendErr:"ขออภัย ระบบยังส่งข้อมูลไม่สำเร็จ ข้อมูลที่กรอกไว้ยังอยู่ครบ กรุณากด ส่งข้อมูล อีกครั้ง หากยังไม่สำเร็จ ติดต่อเราทาง LINE @NEXSPACE หรือโทร 064 164 2459",
-      submit:"ส่งข้อมูลทรัพย์", sending:"กำลังส่งข้อมูล…"
+      submit:"ส่งข้อมูลทรัพย์", sending:"กำลังส่งข้อมูล…", sendingPhotos:"กำลังส่งข้อมูลและรูปภาพ… อาจใช้เวลาประมาณ 1 นาที"
     }
   };
   const EN = T.en;
@@ -369,7 +412,7 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
     document.documentElement.lang = lang;
     document.querySelectorAll("[data-t]").forEach(el=>{ const v=T[lang][el.dataset.t]; if(typeof v==="string") el.textContent=v; });
     document.querySelectorAll("[data-list]").forEach(el=>el.textContent=T[lang][el.dataset.list][+el.dataset.i]);
-    syncProjectLabel();
+    syncProjectLabel(); if (window.__nxPhotoCount) window.__nxPhotoCount();
     $("#lang-en").setAttribute("aria-pressed", lang==="en");
     $("#lang-th").setAttribute("aria-pressed", lang==="th");
     $("#today").textContent = new Date().toLocaleDateString(lang==="th"?"th-TH":"en-GB",{day:"numeric",month:"short",year:"numeric"});
@@ -396,6 +439,39 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
   $("#wantSale").addEventListener("change", syncPanels);
   $("#wantRent").addEventListener("change", syncPanels);
   syncPanels();
+  function syncSubs(){
+    const p=one("#pet"); $("#petKindBox").hidden = !(p==="Allowed"||p==="Negotiable");
+    $("#keyCodeBox").hidden = one("#key")!=="Digital lock (code)";
+  }
+  document.querySelectorAll("#pet input, #key input").forEach(i=>i.addEventListener("change",()=>{ syncSubs(); if(i.value==="Digital lock (code)") $("#keyCode").focus(); }));
+
+  // ---------- Photos: resized in the browser (long side 2048 px, JPEG) before sending ----------
+  const MAX_PHOTOS = 25, photos = [];
+  function photoCount(){ $("#photoCount").textContent = photos.length ? T[lang].photosN(photos.length) : T[lang].photosMax; }
+  window.__nxPhotoCount = photoCount;
+  async function shrink(file){
+    let src;
+    try{ src = await createImageBitmap(file, {imageOrientation:"from-image"}); }
+    catch(e){ src = await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=URL.createObjectURL(file); }); }
+    const w0=src.width||src.naturalWidth, h0=src.height||src.naturalHeight, k=Math.min(1, 2048/Math.max(w0,h0));
+    const c=document.createElement("canvas"); c.width=Math.round(w0*k); c.height=Math.round(h0*k);
+    c.getContext("2d").drawImage(src,0,0,c.width,c.height);
+    return await new Promise(r=>c.toBlob(r,"image/jpeg",0.82));
+  }
+  $("#photos").addEventListener("change", async e=>{
+    const files=[...e.target.files].filter(f=>/^image\//.test(f.type)||/\.(heic|heif|jpe?g|png|webp)$/i.test(f.name)); e.target.value="";
+    for (const f of files){
+      if (photos.length>=MAX_PHOTOS) break;
+      const item={name:f.name.replace(/\.[^.]+$/,"")||"photo", blob:null};
+      const box=document.createElement("div"); box.className="thumb busy";
+      const x=document.createElement("button"); x.type="button"; x.setAttribute("aria-label","Remove"); x.textContent="×";
+      x.onclick=()=>{ const i=photos.indexOf(item); if(i>=0) photos.splice(i,1); box.remove(); photoCount(); };
+      box.appendChild(x); $("#thumbs").appendChild(box); photos.push(item); photoCount();
+      try{ item.blob=await shrink(f); const im=document.createElement("img"); im.alt=""; im.src=URL.createObjectURL(item.blob); box.prepend(im); box.classList.remove("busy"); }
+      catch(err){ const i=photos.indexOf(item); if(i>=0) photos.splice(i,1); box.remove(); photoCount(); }
+    }
+  });
+  photoCount();
   document.querySelectorAll("#ptype input").forEach(i=>i.addEventListener("change",()=>{ $("#ptypeHint").hidden=true; syncProjectLabel(); }));
 
   ["#salePrice","#rentPrice","#net"].forEach(id=>{
@@ -440,9 +516,11 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
       unit:v("#unit"), area:v("#area"), floor:v("#floor"),
       beds:one("#beds"), baths:one("#baths"), maid:one("#maid"), parking:one("#parking"),
       sale:$("#wantSale").checked, rent:$("#wantRent").checked,
-      salePrice:v("#salePrice"), rentPrice:v("#rentPrice"), net:v("#net"), tf:one("#tf"), pet:one("#pet"),
+      salePrice:v("#salePrice"), rentPrice:v("#rentPrice"), net:v("#net"), tf:one("#tf"),
+      pet:(()=>{ const p=one("#pet"), k=one("#petKind"); return (p==="Allowed"||p==="Negotiable") && k ? `${p} (${k})` : p; })(),
+      incl:many("#incl"), keyCode:one("#key")==="Digital lock (code)" ? v("#keyCode") : "",
       furn:one("#furn"), appliances:v("#appliances"), direction:many("#direction"), key:one("#key"), notes:v("#notes"),
-      agent:AGENT, source:SOURCE || "Owner form", lang, date:new Date()
+      photos:photos.filter(p=>p.blob).length, agent:AGENT, source:SOURCE || "Owner form", lang, date:new Date()
     };
   }
 
@@ -519,12 +597,13 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
     rowN([["Resale price / ราคาขาย", d.sale ? thb(d.salePrice) : "Not for sale"],["Rental price / ค่าเช่า", d.rent ? (d.rentPrice ? d.rentPrice+" THB / month" : "") : "Not for rent"]]);
     rowN([["Net price / ราคาสุทธิ", thb(d.net)],["TF expenses / ค่าโอน", d.sale ? d.tf : "n/a"],["Pet / สัตว์เลี้ยง", d.rent ? d.pet : "n/a"]]);
     heading("Additional condition  ·  เงื่อนไขเพิ่มเติม");
-    rowN([["Furnished / เฟอร์นิเจอร์", d.furn],["Key / กุญแจ", d.key],["Direction / ทิศ", d.direction.join(", ")]]);
-    rowN([["Appliances / เครื่องใช้ไฟฟ้า", d.appliances]]);
-    const notesLines = Math.max(1, Math.min(4, Math.floor((1330 - y - 33) / 31)));
+    rowN([["Furnished / เฟอร์นิเจอร์", d.furn],["Key / กุญแจ", d.key + (d.keyCode ? " – code given (see email)" : "")],["Direction / ทิศ", d.direction.join(", ")]]);
+    if (d.rent) rowN([["Appliances / เครื่องใช้ไฟฟ้า", d.appliances],["Rent includes / ค่าเช่ารวม", d.incl.join(", ")]]);
+    else rowN([["Appliances / เครื่องใช้ไฟฟ้า", d.appliances]]);
+    const notesLines = Math.max(1, Math.min(3, Math.floor((1360 - y - 33) / 31)));
     const nr=[["Other / อื่น ๆ", d.notes]]; nr.maxLines=notesLines; rowN(nr);
 
-    y = Math.max(y+6, 1250); if (y>1340) y=1340;
+    y = Math.min(Math.max(y+10, 1250), 1364);
     g.fillStyle=INK; g.font="italic "+F(400,19);
     g.fillText("The Owner authorizes the Company to use property information and photographs for marketing purposes.", M, y); y+=28;
     g.fillText("Commission:  Sale: 3% of the net selling price, plus applicable VAT", M, y); y+=28;
@@ -540,7 +619,7 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
     g.beginPath(); g.moveTo(x2,y+104); g.lineTo(W-M,y+104); g.stroke();
     y += 140;
     g.fillStyle=MUTED; g.font=F(400,17);
-    g.fillText("Agent:  " + (d.agent||"—") + "   ·   Source:  " + (d.source||"—") + "   ·   Form language: " + (d.lang==="th"?"Thai":"English") + "   ·   Owner ticked agreement to terms", M, y);
+    g.fillText("Agent:  " + (d.agent||"—") + "   ·   Source:  " + (d.source||"—") + "   ·   Form language: " + (d.lang==="th"?"Thai":"English") + "   ·   Owner ticked agreement to terms" + (d.photos ? "   ·   Owner photos: "+d.photos : ""), M, y);
     g.textAlign="center"; g.fillStyle=NAVY; g.font=F(500,20);
     g.fillText("NEXSPACE REALTY CO., LTD   ·   +66 64 164 2459   ·   LINE @NEXSPACE", W/2, H-96);
 
@@ -554,6 +633,8 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
 
   // ---------- Deliver by email (same receiver as the enquiry form) ----------
   const ENDPOINT = "https://script.google.com/macros/s/AKfycbzpESh66KvULe5CZXtK1XHEvarsO7szpsCNSzxU30Hv1oq8sbGKHzQI-Z-PfxdA_xeW/exec";
+  // The photo upload needs the updated receiver (version 2). It stays hidden until that is deployed, so no photo is ever lost.
+  fetch(ENDPOINT, {credentials:"omit"}).then(r=>r.json()).then(o=>{ if(o && o.v>=2) $("#photoSec").hidden=false; }).catch(()=>{});
   function addField(name, value){ const i=document.createElement("input"); i.type="hidden"; i.name=name; i.value=value||"—"; $("#m_fields").appendChild(i); }
   const blobToBase64 = b => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(",")[1]); r.onerror=rej; r.readAsDataURL(b); });
   function showSendError(){
@@ -565,7 +646,7 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
     const listing = [d.sale ? `For sale ${d.salePrice} THB` : "", d.rent ? `For rent ${d.rentPrice} THB / month` : ""].filter(Boolean).join(" · ");
     const cond = [
       d.net && "Net price: "+d.net+" THB", d.furn && "Furnished: "+d.furn, d.appliances && "Appliances: "+d.appliances,
-      d.direction.length && "Direction: "+d.direction.join(", "), d.key && "Key: "+d.key,
+      d.direction.length && "Direction: "+d.direction.join(", "), d.key && "Key: "+d.key+(d.keyCode ? " (code: "+d.keyCode+")" : ""), d.rent && d.incl.length && "Rent includes: "+d.incl.join(", "),
       d.rent && d.pet && "Pet: "+d.pet, d.sale && d.tf && "TF expenses: "+d.tf, d.notes && "Other: "+d.notes
     ].filter(Boolean).join("\n");
     return {
@@ -575,7 +656,7 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
       "Area (sq m)": d.area, "Floor": d.floor, "Bedroom": d.beds, "Bathroom": d.baths, "Maid": d.maid, "Parking": d.parking,
       "Listing": listing, "Resale price (THB)": d.sale ? d.salePrice : "", "Rental price (THB / month)": d.rent ? d.rentPrice : "",
       "Net price (THB)": d.net, "Furnished": d.furn, "Appliances": d.appliances, "Direction": d.direction.join(", "),
-      "Key": d.key, "Pet": d.rent ? d.pet : "", "TF expenses": d.sale ? d.tf : "",
+      "Key": d.key, "Door code / password": d.keyCode, "Pet": d.rent ? d.pet : "", "Rent includes": d.rent ? d.incl.join(", ") : "", "Photos": d.photos ? String(d.photos) : "", "TF expenses": d.sale ? d.tf : "",
       "Additional conditions": `${d.project} ${d.unit} · ${listing}` + (cond ? "\n"+cond : ""),
       "Agent / referred by": d.agent, "Source": d.source, "Form language": d.lang==="th" ? "Thai" : "English",
       "Signed": hasSig ? "Yes, terms accepted (see attached PDF)" : "No signature"
@@ -586,7 +667,7 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
     e.preventDefault();
     if(!validate()){ const first=document.querySelector(".field.invalid input, .hint:not([hidden])"); first && first.scrollIntoView({behavior:"smooth",block:"center"}); return; }
     const btn=$("#submitBtn"); btn.disabled=true; $("#formErr").hidden=true;
-    $("#sendingText").textContent=t("sending"); $("#sending").hidden=false;
+    $("#sendingText").textContent=t(photos.some(p=>p.blob) ? "sendingPhotos" : "sending"); $("#sending").hidden=false;
     let d, fields, subject, blob=null, filename="";
     try{
       d=collect(); fields=buildFields(d);
@@ -602,9 +683,12 @@ input[type=date]:focus{border-color:var(--navy);outline:none}
     const thanksUrl = new URL("thanks.html?lang="+d.lang, location.href).href;
 
     if (ENDPOINT) {
-      const ctrl = new AbortController(); const timer = setTimeout(()=>ctrl.abort(), 45000);
+      const ctrl = new AbortController(); const timer = setTimeout(()=>ctrl.abort(), photos.length ? 180000 : 45000);
       try{
-        const payload = { form:"owner", fields, subject, filename, pdfBase64: blob ? await blobToBase64(blob) : "" };
+        const ready = photos.filter(p=>p.blob);
+        const safeN = s => s.replace(/[\\/:*?"<>|]+/g,"").trim().slice(0,60) || "photo";
+        const photoPayload = await Promise.all(ready.map(async (p,i)=>({ name:`${String(i+1).padStart(2,"0")} ${safeN(p.name)}.jpg`, base64: await blobToBase64(p.blob) })));
+        const payload = { form:"owner", fields, subject, filename, pdfBase64: blob ? await blobToBase64(blob) : "", photos: photoPayload };
         const r = await fetch(ENDPOINT, { method:"POST", body: JSON.stringify(payload), headers:{ "Content-Type":"text/plain;charset=utf-8" }, signal: ctrl.signal, redirect:"follow", credentials:"omit" });
         const out = await r.json().catch(()=>({}));
         clearTimeout(timer);

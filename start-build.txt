@@ -1,2 +1,2 @@
 start build
-Property registration form
+Property registration: pets, door code, rent includes, photos
