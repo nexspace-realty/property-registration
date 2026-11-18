@@ -1,2 +1,2 @@
 start build
-Property registration: pets, door code, rent includes, photos
+Property registration: photo upload removed
